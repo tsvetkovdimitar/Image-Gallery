@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="addNextRow()">
+<div id="images" onclick=""></div>
+<div class="bottom" id="alert"></div>
+<button id="btn" onclick="addNextRow()">Add More</button>
+<button type="button" class="delete_button" onclick="deleteSelectedImage()" id="delete"><img id="deleteImage" src="img/cross.jpg" width="20" height="20"></button>
+<script type="text/javascript">
+
+    /**
+     * Created by dimitar on 07/03/2017.
+     */
+
+    var rowLimit = 15;
+    var nextRowLimit
+    var image;
+    var selectedImage = null;
+    var div;
+    var description;
+    var text;
+    var button;
+    var deleteButton;
+    var imageNotEmpty = true;
+    div = document.getElementById("images");
+    description = document.createElement("h2");
+
+
+    //a counter to get number of image loaded.
+    var currentImageNumber = 1;
+
+    //function to call the recursive function to add images.
+    function addNextRow(){
+        //the next row limit
+        nextRowLimit = currentImageNumber + rowLimit;
+        //call to the recursive function
+        addMoreImages();
+    }
+
+    //method to load images using input number by recursion.
+    function addMoreImages() {
+
+        if ((currentImageNumber < nextRowLimit) && imageNotEmpty) {
+
+            image = document.createElement("IMG");
+            button = document.getElementById("btn");
+
+            if (currentImageNumber < 10) {
+
+                div.style.float = "left";
+                image.setAttribute("src", "img/0" + currentImageNumber + ".jpg");
+                image.setAttribute("alt", "Picture" + currentImageNumber);
+                image.setAttribute("id", "0" + currentImageNumber);
+                image.setAttribute("onclick", "addBorder(id);");
+                image.style.border = "thick solid #00FFFF";
+                image.style.width = ((100 / rowLimit) - 2) + "%";
+                image.style.height = "auto";
+                image.style.marginRight = "0%";
+                image.style.marginBottom = "0.5em";
+                image.style.float = "left";
+                image.style.display = "inline";
+
+                image.onload = function(){
+
+                    //increment the image number if the image loads successfully.
+                    currentImageNumber++;
+
+                    //add image to the div.
+                    div.appendChild(image);
+
+                    //recursive call
+                    addMoreImages();
+                };
+
+                image.onerror = function(){
+                    exitLoop(image);
+                };
+
+            } else {
+
+                div.style.float = "left";
+                image.setAttribute("src", "img/" + currentImageNumber + ".jpg");
+                image.setAttribute("alt", "Picture" + currentImageNumber);
+                image.setAttribute("id", currentImageNumber);
+                image.setAttribute("onclick", "addBorder(id);");
+
+                image.style.border = "thick solid #00FFFF";
+                image.style.width = ((100 / rowLimit) - 2) + "%";
+                image.style.height = "auto";
+                image.style.marginRight = "0%";
+                image.style.marginBottom = "0.5em";
+                image.style.float = "left";
+                image.style.display = "inline";
+
+
+                //appendChild(image) only when the image loaded successfully.
+
+                image.onload = function(){
+
+                    //increment the image number if the image loads successfully.
+                    currentImageNumber++;
+
+                    //add image to the div.
+                    div.appendChild(image);
+
+                    //recursive call
+                    addMoreImages();
+                };
+
+                image.onerror = function(){
+                    exitLoop(image);
+                };
+
+            }
+        }
+
+    }
+
+
+    function addBorder(id){
+
+        if(selectedImage !== null){
+
+            selectedImage.style.border = "thick solid #00FFFF";
+            description.innerHTML = " ";
+
+        }
+
+        selectedImage = document.getElementById(id);
+        selectedImage.style.border = "thick solid #000000";
+        deleteButton = document.getElementById("delete");
+        text = document.createTextNode(" This is picture " + id);
+        description.appendChild(text);
+        document.body.appendChild(description);
+        document.body.appendChild(deleteButton);
+
+    }
+
+    function deleteSelectedImage(){
+
+        selectedImage.remove();
+        description.remove();
+    }
+
+    function exitLoop(image){
+
+        //change boolean after error is detected.
+        imageNotEmpty = false;
+
+
+        text = document.createTextNode("The image could not be loaded!!!");
+        description.appendChild(text);
+        document.body.appendChild(description);
+        return;
+    }
+
+    function setBoolean(){
+
+        imageNotEmpty = true;
+
+    }
+</script>
+</body>
+</html>
